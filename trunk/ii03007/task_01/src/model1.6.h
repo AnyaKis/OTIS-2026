@@ -25,7 +25,7 @@ class model1_6 : public Model{
         }
 
         void reset() override{
-            y = 0;
+            y = 0;  
             y_prev = 0;
             y_prev_prev = 0;
         };
