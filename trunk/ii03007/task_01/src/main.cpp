@@ -52,7 +52,7 @@ int main(){
     int choice = checkintvalues("Вы выбрали модель: ", 1, 3);
     int number = checkintvalues("Введите количество шагов (number): ", 1, 1000);
     
-    std::unique_ptr<Model> model;
+    std::unique_ptr<BaseModel> model;
        switch(choice){
         case 1:{
             std::cout << "Модель 1.6: y(t+1) = a1*y(t) + a2*y(t-1) + a3*y(t-2) + b*u(t)" << std::endl;
@@ -108,7 +108,7 @@ int main(){
 
     for (int t = 0; t < number; t++) {
         double u = checkSignal(t, inputsignal, ampl);
-        double y = model->nextStep(u);
+        double y = model->stepForward(u);
         std::cout << std::setw(4)  << t << std::setw(12) << std::fixed << std::setprecision(4) << u << std::setw(12) << y << std::endl;
         file << t << ";" << u << ";" << y << std::endl;
     }

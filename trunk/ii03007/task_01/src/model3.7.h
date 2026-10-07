@@ -1,8 +1,8 @@
 #pragma once
 #include <cmath>
-#include "Model.h"
+#include "model.h"
 
-class model3_7 : public Model {
+class model3_7 : public BaseModel {
     private:
         double a;
         double b;
@@ -15,13 +15,13 @@ class model3_7 : public Model {
     {
     }
 
-    double nextStep(double u) override {
+    double stepForward(double u) override {
         double f = -std::exp(a) * y + b * u;
         y = y + h * f;
         return y;
     }
 
-    void reset() override {
+    void clearState() override {
         y = 0;
     }
 };

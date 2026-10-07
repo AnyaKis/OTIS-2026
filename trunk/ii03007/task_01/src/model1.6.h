@@ -1,7 +1,7 @@
 #pragma once
 #include "model.h"
 
-class model1_6 : public Model{
+class model1_6 : public BaseModel{
     private:
         double a1;
         double a2;
@@ -16,7 +16,7 @@ class model1_6 : public Model{
         {
         }
 
-        double nextStep(double u) override{
+        double stepForward(double u) override{
             double y_next = (a1 * y) + (a2 * y_prev) + (a3 * y_prev_prev) + (b * u);
             y_prev_prev = y_prev;
             y_prev = y;
@@ -24,7 +24,7 @@ class model1_6 : public Model{
             return y_next;
         }
 
-        void reset() override{
+        void clearState() override{
             y = 0;  
             y_prev = 0;
             y_prev_prev = 0;

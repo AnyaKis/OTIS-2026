@@ -48,18 +48,18 @@
 
 ### 3.1. Классы
 
-Все модели объединены одним интерфейсом — абстрактным классом `Model`:
+Все модели объединены одним интерфейсом — абстрактным классом `BaseModel`:
 
 ```cpp
-class Model{
+class BaseModel{
     public:
-        virtual ~Model() = default;
-        virtual double nextStep(double u) = 0;
-        virtual void reset() = 0;
+        virtual ~BaseModel() = default;
+        virtual double stepForward(double u) = 0;
+        virtual void clearState() = 0;
 };
 ```
 
-`nextStep(u)` принимает текущий вход и возвращает новое значение выхода, `reset()` обнуляет внутреннее состояние. Конкретные модели унаследованы от `Model`:
+`stepForward(u)` принимает текущий вход и возвращает новое значение выхода, `clearState()` обнуляет внутреннее состояние. Конкретные модели унаследованы от `BaseModel`:
 
 |   Класс    | Модель | Что хранит                                                                          |
 |------------|--------|-------------------------------------------------------------------------------------|
@@ -72,20 +72,20 @@ class Model{
 **Полиморфизм.** В `main()` программа держит модель за указатель базового класса:
 
 ```cpp
-std::unique_ptr<Model> model;
+std::unique_ptr<BaseModel> model;
 model = std::make_unique<model1_6>(a1, a2, a3, b);
 ```
 
-Какой именно класс создаётся, выбирается после ответа пользователя; дальше общий цикл симуляции просто вызывает `model->nextStep(u)` и не знает, какая модель стоит за указателем. Умный указатель `unique_ptr` сам освобождает память в конце работы, поэтому в коде нет явного `delete`.
+Какой именно класс создаётся, выбирается после ответа пользователя; дальше общий цикл симуляции просто вызывает `model->stepForward(u)` и не знает, какая модель стоит за указателем. Умный указатель `unique_ptr` сам освобождает память в конце работы, поэтому в коде нет явного `delete`.
 
 Структура наследования показана на UML-диаграмме классов:
 
 ```mermaid
 classDiagram
-    class Model {
+    class BaseModel {
         <<abstract>>
-        +nextStep(double u) double
-        +reset() void
+        +stepForward(double u) double
+        +clearState() void
     }
     class model1_6 {
         -double a1
@@ -95,8 +95,8 @@ classDiagram
         -double y
         -double y_prev
         -double y_prev_prev
-        +nextStep(double u) double
-        +reset() void
+        +stepForward(double u) double
+        +clearState() void
     }
     class model2_1 {
         -double a
@@ -106,20 +106,20 @@ classDiagram
         -double y
         -double y_prev
         -double u_prev
-        +nextStep(double u) double
-        +reset() void
+        +stepForward(double u) double
+        +clearState() void
     }
     class model3_7 {
         -double a
         -double b
         -double h
         -double y
-        +nextStep(double u) double
-        +reset() void
+        +stepForward(double u) double
+        +clearState() void
     }
-    Model <|-- model1_6
-    Model <|-- model2_1
-    Model <|-- model3_7
+    BaseModel <|-- model1_6
+    BaseModel <|-- model2_1
+    BaseModel <|-- model3_7
 ```
 ### 3.2. Ввод параметров
 
@@ -138,7 +138,7 @@ int    checkintvalues(const std::string& text, int minVal, int maxVal);
 
 | Файл             | За что отвечает                                    |
 |------------------|----------------------------------------------------|
-| `model.h`        | абстрактный класс `Model`                          |
+| `model.h`        | абстрактный класс `BaseModel`                          |
 | `model1.6.h`     | модель 1.6 (линейная)                              |
 | `model2.1.h`     | модель 2.1 (нелинейная)                            |                          
 | `model3.7.h`     | модель 3.7 (дифференциальное уравнение)            |

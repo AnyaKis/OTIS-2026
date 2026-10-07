@@ -1,8 +1,8 @@
 #pragma once
 
-class Model{
+class BaseModel{
     public:
-        virtual ~Model() = default;
-        virtual double nextStep(double u) = 0;
-        virtual void reset() = 0;
+        virtual double stepForward(double u) = 0;
+        virtual void clearState() = 0;
+        virtual ~BaseModel() = default;
 };

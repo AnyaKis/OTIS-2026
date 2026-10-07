@@ -1,8 +1,8 @@
 #pragma once
 #include <cmath>
-#include "Model.h"
+#include "model.h"
 
-class model2_1 : public Model{
+class model2_1 : public BaseModel{
     private:
         double a;
         double b;
@@ -16,14 +16,14 @@ class model2_1 : public Model{
         : a(a), b(b), c(c), d(d)
         {
         }
-        double nextStep(double u) override{
+        double stepForward(double u) override{
             double y_next = (a * y) - (b * y_prev * y_prev) + (c * u) + (d * std::sin(u_prev));
             y_prev = y;
             y = y_next;
             u_prev = u;  
             return y_next;
         }
-        void reset() override{
+        void clearState() override{
             y = 0;
             y_prev = 0;
             u_prev = 0;
