@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title Лаба 2 - тесты и запуск
+title Лаба 2 - тесты
 setlocal
 
 REM ----------------------------------------------------------
@@ -8,7 +8,6 @@ REM  Шаг 1: проверяем, что установлен CMake
 REM  Шаг 2: если есть MinGW (g++ + mingw32-make), собираем
 REM         тесты с метками gcov (опция TEST_COVERAGE)
 REM  Шаг 3: собираем, прогоняем ctest, печатаем сводку gcovr
-REM  Шаг 4: по желанию запускаем саму программу
 REM ----------------------------------------------------------
 
 where cmake >nul 2>nul
@@ -24,7 +23,7 @@ set USE_MINGW=0
 where g++ >nul 2>nul && where mingw32-make >nul 2>nul && set USE_MINGW=1
 
 echo.
-echo ============== [1 из 4] Сборка (CMake + Google Test) ==============
+echo ============== [1 из 3] Сборка тестов (CMake + Google Test) ==============
 if "%USE_MINGW%"=="1" (
     echo  Инструменты: MinGW GCC, тесты будут собраны с метками gcov.
     cmake -S . -B build -G "MinGW Makefiles" -DTEST_COVERAGE=ON
@@ -37,7 +36,7 @@ cmake --build build --config Release
 if errorlevel 1 goto fail
 
 echo.
-echo ============== [2 из 4] Прогон всех тестов (ctest) ==============
+echo ============== [2 из 3] Прогон всех тестов (ctest) ==============
 cd build
 ctest --output-on-failure > ..\test_report.txt 2>&1
 set RC=%errorlevel%
@@ -45,7 +44,7 @@ type ..\test_report.txt
 cd ..
 
 echo.
-echo ============== [3 из 4] Покрытие кода (gcovr) ==============
+echo ============== [3 из 3] Покрытие кода (gcovr) ==============
 if "%USE_MINGW%" neq "1" goto coverage_done
 where gcovr >nul 2>nul
 if %errorlevel% equ 0 (
@@ -59,19 +58,6 @@ if %errorlevel% equ 0 (
 if %RC% neq 0 goto fail
 echo.
 echo  ВСЕ ТЕСТЫ ПРОШЛИ. Отчёт сохранён: test_report.txt
-
-echo.
-echo ============== [4 из 4] Запуск программы ==============
-if not exist build\src\task2_ii03007.exe (
-    echo  build\src\task2_ii03007.exe не найден - запуск пропущен.
-    goto finish
-)
-choice /c YN /n /m "Запустить программу? [Y - да, N - нет] "
-if errorlevel 2 goto finish
-echo.
-build\src\task2_ii03007.exe
-
-:finish
 echo.
 pause
 exit /b 0

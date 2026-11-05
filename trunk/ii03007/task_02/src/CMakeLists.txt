@@ -1,1 +1,0 @@
-add_executable(task2_ii03007 main.cpp)
