@@ -1,21 +1,23 @@
 #pragma once
+#include <array>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
 
+// Анализ устойчивости модели 1.6.
 // Характеристическое уравнение: z^3 - a1*z^2 - a2*z - a3 = 0.
 // Устойчиво, если все корни строго внутри единичного круга (|z| < 1).
 
 struct CubicRoots {
-    double re[3];   // действительные части корней
-    double im[3];   // мнимые части (0 для вещественных корней)
-    double mod[3];  // модули |z|
-    bool   stable;  // все |z| < 1
+    std::array<double, 3> re;   // действительные части корней
+    std::array<double, 3> im;   // мнимые части (0 для вещественных корней)
+    std::array<double, 3> mod;  // модули |z|
+    bool stable;                // все |z| < 1
 };
 
 // Решение кубического уравнения (Кардано / тригонометрический метод, в double).
 inline CubicRoots cubicRoots(double a1, double a2, double a3) {
-    CubicRoots r;
+    CubicRoots r{};
     const double PI = 3.14159265358979323846;
 
     // Уравнение вида z^3 + p*z^2 + q*z + rr = 0
@@ -31,7 +33,7 @@ inline CubicRoots cubicRoots(double a1, double a2, double a3) {
     if (D > 0.0) {
         // Один вещественный корень + комплексно-сопряжённая пара
         double s  = std::sqrt(D);
-        double t1 = std::cbrt(-B / 2.0 + s) + std::cbrt(-B / 2.0 - s); 
+        double t1 = std::cbrt(-B / 2.0 + s) + std::cbrt(-B / 2.0 - s);
         r.re[0] = t1 - p / 3.0;
         r.im[0] = 0.0;
         double dq = 3.0 * t1 * t1 + 4.0 * A;   // положительно при D > 0
@@ -39,7 +41,6 @@ inline CubicRoots cubicRoots(double a1, double a2, double a3) {
         r.im[1] = 0.5 * std::sqrt(dq > 0.0 ? dq : 0.0);
         r.re[2] = r.re[1];
         r.im[2] = -r.im[1];
-
     } else {
         // Три вещественных корня (D = 0 - кратные)
         if (A >= 0.0) {
@@ -81,11 +82,9 @@ inline bool stable16(double a1, double a2, double a3) {
 // Поток out: в main - std::cout, в тестах - строковый поток.
 inline void printStabilityCheck(double a1, double a2, double a3, std::ostream& out) {
     CubicRoots r = cubicRoots(a1, a2, a3);
-    
     out << "Stability check (model 1.6):" << std::endl
         << "  z^3 - (" << a1 << ")*z^2 - (" << a2 << ")*z - (" << a3 << ") = 0" << std::endl;
     out << std::fixed << std::setprecision(4);
-
     for (int k = 0; k < 3; ++k) {
         out << "  z" << k + 1 << " = " << r.re[k];
         if (r.im[k] != 0.0)
