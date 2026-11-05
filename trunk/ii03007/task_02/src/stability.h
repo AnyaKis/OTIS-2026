@@ -28,25 +28,28 @@ inline CubicRoots cubicRoots(double a1, double a2, double a3) {
     // Приведённый кубик t^3 + A*t + B = 0, замена z = t - p/3
     double A = q - p * p / 3.0;
     double B = 2.0 * p * p * p / 27.0 - p * q / 3.0 + rr;
-    double D = B * B / 4.0 + A * A * A / 27.0;
 
-    if (D > 0.0) {
+    if (B * B / 4.0 + A * A * A / 27.0 > 0.0) {
         // Один вещественный корень + комплексно-сопряжённая пара
-        double s  = std::sqrt(D);
+        double s  = std::sqrt(B * B / 4.0 + A * A * A / 27.0);
         double t1 = std::cbrt(-B / 2.0 + s) + std::cbrt(-B / 2.0 - s);
         r.re[0] = t1 - p / 3.0;
         r.im[0] = 0.0;
-        double dq = 3.0 * t1 * t1 + 4.0 * A;   // положительно при D > 0
+        double dq = 3.0 * t1 * t1 + 4.0 * A;   // положительно при B * B / 4.0 + A * A * A / 27.0 > 0
         r.re[1] = -t1 / 2.0 - p / 3.0;
         r.im[1] = 0.5 * std::sqrt(dq > 0.0 ? dq : 0.0);
         r.re[2] = r.re[1];
         r.im[2] = -r.im[1];
     } else {
-        // Три вещественных корня (D = 0 - кратные)
+        // Три вещественных корня (B * B / 4.0 + A * A * A / 27.0 = 0 - кратные)
         if (A >= 0.0) {
             // a1 = a2 = a3 = 0: тройной корень t = 0
-            r.re[0] = r.re[1] = r.re[2] = -p / 3.0;
-            r.im[0] = r.im[1] = r.im[2] = 0.0;
+            r.re[0] = -p / 3.0;
+            r.re[1] = -p / 3.0;
+            r.re[2] = -p / 3.0;
+            r.im[0] = 0.0;
+            r.im[1] = 0.0;
+            r.im[2] = 0.0;
         } else {
             double m   = 2.0 * std::sqrt(-A / 3.0);
             double arg = 3.0 * B / (2.0 * A) * std::sqrt(-3.0 / A);
