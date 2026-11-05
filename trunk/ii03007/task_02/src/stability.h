@@ -27,9 +27,8 @@ inline CubicRoots cubicRoots(double a1, double a2, double a3) {
 
     // Приведённый кубик t^3 + A*t + B = 0, замена z = t - p/3
     double A = q - p * p / 3.0;
-    double B = 2.0 * p * p * p / 27.0 - p * q / 3.0 + rr;
 
-    if (B * B / 4.0 + A * A * A / 27.0 > 0.0) {
+    if (double B = 2.0 * p * p * p / 27.0 - p * q / 3.0 + rr; B * B / 4.0 + A * A * A / 27.0 > 0.0) {
         // Один вещественный корень + комплексно-сопряжённая пара
         double s  = std::sqrt(B * B / 4.0 + A * A * A / 27.0);
         double t1 = std::cbrt(-B / 2.0 + s) + std::cbrt(-B / 2.0 - s);
