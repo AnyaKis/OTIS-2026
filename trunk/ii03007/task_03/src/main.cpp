@@ -90,7 +90,7 @@ std::unique_ptr<BaseModel> makePlant(int choice){
                 return nullptr;
             }
         }
-        return std::unique_ptr<BaseModel>(new model1_6(a1, a2, a3, b));
+        return std::make_unique<model1_6>(a1, a2, a3, b);
     }
 
     if (choice == 2){
@@ -99,7 +99,7 @@ std::unique_ptr<BaseModel> makePlant(int choice){
         const double b = readDouble("  b = ");
         const double c = readDouble("  c = ");
         const double d = readDouble("  d = ");
-        return std::unique_ptr<BaseModel>(new model2_1(a, b, c, d));
+        return std::make_unique<model2_1>(a, b, c, d);
     }
 
     std::cout << std::endl << "Уравнение 3.7. Параметры:" << std::endl;
@@ -111,7 +111,7 @@ std::unique_ptr<BaseModel> makePlant(int choice){
         if (h > 0.0) break;
         std::cout << "Шаг h должен быть положительным!" << std::endl;
     }
-    return std::unique_ptr<BaseModel>(new model3_7(a, b, h));
+    return std::make_unique<model3_7>(a, b, h);
 }
 
 PidRegulator makeRegulator(){
@@ -191,8 +191,7 @@ void runLoop(BaseModel& plant, PidRegulator& pid, double w, int mode, int steps,
 double readDouble(const std::string& prompt){
     for (;;){
         std::cout << prompt;
-        double value = 0.0;
-        if (std::cin >> value) return value;
+        if (double value{}; std::cin >> value) return value;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Это не число, попробуйте ещё раз." << std::endl;
@@ -202,8 +201,7 @@ double readDouble(const std::string& prompt){
 int readInt(const std::string& prompt, int minValue, int maxValue){
     for (;;){
         std::cout << prompt;
-        int value = 0;
-        if ((std::cin >> value) && value >= minValue && value <= maxValue) return value;
+        if (int value{}; (std::cin >> value) && value >= minValue && value <= maxValue) return value;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Нужно целое число от " << minValue << " до " << maxValue << "!" << std::endl;
